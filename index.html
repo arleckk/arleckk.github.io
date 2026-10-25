@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oscar — Software Engineer</title>
+<meta name="description" content="Senior software engineer building agentic AI systems, local-first AI tooling and high-performance backend services.">
+<meta name="theme-color" content="#050505">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050505;
+    --ink: #F4F4F2;
+    --soft: rgba(244, 244, 242, 0.62);
+    --faint: rgba(244, 244, 242, 0.38);
+    --hair: rgba(255, 255, 255, 0.09);
+    --shell: rgba(255, 255, 255, 0.035);
+    --core: #0B0B0C;
+    --violet: #8B7CFF;
+    --emerald: #34D8A0;
+    --amber: #FFB86B;
+    --sans: 'Geist', 'SF Pro Display', system-ui, sans-serif;
+    --mono: 'Geist Mono', 'SF Mono', ui-monospace, monospace;
+    --spring: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: var(--sans); font-size: 17px; line-height: 1.6;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- background layers ---------- */
+  .orbs { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+  .orb { position: absolute; border-radius: 50%; will-change: transform; }
+  .orb.a { width: 70vmax; height: 70vmax; left: -22vmax; top: -30vmax;
+    background: radial-gradient(closest-side, rgba(139,124,255,0.22), transparent); }
+  .orb.b { width: 60vmax; height: 60vmax; right: -24vmax; top: 22vh;
+    background: radial-gradient(closest-side, rgba(52,216,160,0.13), transparent); }
+  .orb.c { width: 50vmax; height: 50vmax; left: 18vw; bottom: -30vmax;
+    background: radial-gradient(closest-side, rgba(255,184,107,0.08), transparent); }
+  .grain { position: fixed; inset: 0; pointer-events: none; z-index: 60; opacity: 0.05;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  main, footer { position: relative; z-index: 1; }
+
+  /* ---------- nav ---------- */
+  .nav {
+    position: fixed; top: 20px; left: 50%; z-index: 40;
+    transform: translateX(-50%);
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 6px 6px 22px; border-radius: 999px;
+    background: rgba(14,14,16,0.62); border: 1px solid var(--hair);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .nav .brand { font-weight: 600; letter-spacing: -0.01em; margin-right: 18px; }
+  .nav .links { display: flex; gap: 2px; }
+  .nav .links a {
+    font-size: 14px; color: var(--soft); padding: 8px 14px; border-radius: 999px;
+    transition: color 500ms var(--spring), background 500ms var(--spring);
+  }
+  .nav .links a:hover { color: var(--ink); background: rgba(255,255,255,0.07); }
+  .burger { display: none; width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgba(255,255,255,0.07);
+    position: relative; cursor: pointer; color: var(--ink); }
+  .burger span { position: absolute; left: 12px; right: 12px; height: 1.5px; background: currentColor; border-radius: 2px;
+    transition: transform 700ms var(--spring); }
+  .burger span:nth-child(1) { top: 16px; }
+  .burger span:nth-child(2) { top: 23px; }
+  .menu-open .burger span:nth-child(1) { transform: translateY(3.5px) rotate(45deg); }
+  .menu-open .burger span:nth-child(2) { transform: translateY(-3.5px) rotate(-45deg); }
+  .overlay {
+    position: fixed; inset: 0; z-index: 30; display: flex; flex-direction: column; justify-content: center;
+    padding: 0 32px; background: rgba(5,5,5,0.86);
+    backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+    opacity: 0; pointer-events: none; transition: opacity 600ms var(--spring);
+  }
+  .menu-open .overlay { opacity: 1; pointer-events: auto; }
+  .overlay a { display: block; font-size: clamp(38px, 11vw, 60px); font-weight: 500; letter-spacing: -0.04em; padding: 6px 0;
+    transform: translateY(48px); opacity: 0; transition: transform 800ms var(--spring), opacity 800ms var(--spring); }
+  .menu-open .overlay a { transform: none; opacity: 1; }
+  .menu-open .overlay a:nth-child(1) { transition-delay: 100ms; }
+  .menu-open .overlay a:nth-child(2) { transition-delay: 160ms; }
+  .menu-open .overlay a:nth-child(3) { transition-delay: 220ms; }
+  .menu-open .overlay a:nth-child(4) { transition-delay: 280ms; }
+
+  /* ---------- shared bits ---------- */
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px; border-radius: 999px; border: 1px solid var(--hair); background: var(--shell);
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--soft);
+  }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--emerald); animation: pulse 2.4s var(--spring) infinite; }
+  @keyframes pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.7); opacity: 0.35; } }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 14px;
+    padding: 8px 8px 8px 24px; border-radius: 999px; font-weight: 500; font-size: 15px;
+    transition: transform 600ms var(--spring), background 600ms var(--spring);
+  }
+  .btn .ico {
+    width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center;
+    transition: transform 600ms var(--spring);
+  }
+  .btn .ico svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+  .btn:hover .ico { transform: translate(3px, -1px) scale(1.06); }
+  .btn:active { transform: scale(0.98); }
+  .btn.solid { background: var(--ink); color: #0a0a0a; }
+  .btn.solid .ico { background: rgba(0,0,0,0.09); }
+  .btn.solid:hover { background: #fff; }
+  .btn.glass { background: rgba(255,255,255,0.06); border: 1px solid var(--hair); color: var(--ink); }
+  .btn.glass .ico { background: rgba(255,255,255,0.09); }
+  .btn.glass:hover { background: rgba(255,255,255,0.1); }
+
+  /* double bezel */
+  .bezel { padding: 8px; border-radius: 32px; background: var(--shell); border: 1px solid var(--hair); height: 100%; }
+  .core {
+    position: relative; height: 100%; border-radius: 24px; padding: 32px; overflow: hidden;
+    background: var(--core); box-shadow: inset 0 1px 1px rgba(255,255,255,0.1);
+  }
+  .core::before { /* cursor spotlight */
+    content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0;
+    background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%), rgba(139,124,255,0.16), transparent 70%);
+    transition: opacity 600ms var(--spring);
+  }
+  .bezel:hover .core::before { opacity: 1; }
+  .core > * { position: relative; }
+
+  section { padding: 128px 0; scroll-margin-top: 20px; }
+  .head { margin-bottom: 64px; max-width: 760px; }
+  .head .eyebrow { margin-bottom: 24px; }
+  h2 { font-size: clamp(34px, 5.2vw, 60px); font-weight: 500; letter-spacing: -0.045em; line-height: 1.04; }
+  h2 span, h1 span { color: var(--faint); }
+  h3 { font-size: 21px; font-weight: 500; letter-spacing: -0.025em; line-height: 1.25; margin-bottom: 10px; }
+  .core p { color: var(--soft); font-size: 15.5px; }
+
+  /* reveal */
+  .js .rv { opacity: 0; transform: translateY(48px); filter: blur(10px);
+    transition: opacity 1000ms var(--spring), transform 1000ms var(--spring), filter 1000ms var(--spring);
+    transition-delay: calc(var(--i, 0) * 90ms); }
+  .js .rv.in { opacity: 1; transform: none; filter: none; }
+
+  /* ---------- hero ---------- */
+  .hero { min-height: 100dvh; display: flex; align-items: center; padding: 150px 0 100px; }
+  .hero-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 56px; align-items: center; }
+  h1 .grad { white-space: nowrap; }
+  h1 { font-size: clamp(42px, 5.6vw, 82px); font-weight: 500; letter-spacing: -0.055em; line-height: 0.98; margin: 28px 0 28px; }
+  h1 .grad { background: linear-gradient(100deg, var(--violet), var(--emerald) 70%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lede { max-width: 34em; color: var(--soft); font-size: 18.5px; }
+  .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 40px; }
+
+  /* pipeline panel */
+  .panel .bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px;
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
+  .steps { list-style: none; position: relative; }
+  .steps::before { content: ''; position: absolute; left: 15px; top: 16px; bottom: 16px; width: 1px; background: var(--hair); }
+  .steps li { display: flex; gap: 18px; align-items: flex-start; padding: 12px 0; position: relative; }
+  .steps .n {
+    flex: none; width: 31px; height: 31px; border-radius: 50%; display: grid; place-items: center;
+    font-family: var(--mono); font-size: 11px; background: var(--core); border: 1px solid var(--hair); color: var(--faint);
+    animation: lit 12s var(--spring) infinite; animation-delay: calc(var(--k) * 3s);
+  }
+  .steps b { display: block; font-weight: 500; font-size: 16px; color: var(--soft); letter-spacing: -0.01em;
+    animation: litText 12s var(--spring) infinite; animation-delay: calc(var(--k) * 3s); }
+  .steps small { display: block; font-family: var(--mono); font-size: 11.5px; color: var(--faint); margin-top: 2px; }
+  @keyframes lit {
+    0%, 22% { background: var(--violet); border-color: var(--violet); color: #0a0a0a; transform: scale(1.12); }
+    28%, 100% { background: var(--core); border-color: var(--hair); color: var(--faint); transform: scale(1); }
+  }
+  @keyframes litText {
+    0%, 22% { color: var(--ink); transform: translateX(4px); }
+    28%, 100% { color: var(--soft); transform: none; }
+  }
+
+  /* ---------- marquee ---------- */
+  .marquee { border-block: 1px solid var(--hair); overflow: hidden; padding: 22px 0; position: relative; z-index: 1; }
+  .track { display: flex; gap: 56px; width: max-content; animation: slide 38s linear infinite; }
+  .track span { font-size: 22px; font-weight: 500; letter-spacing: -0.03em; color: var(--faint); white-space: nowrap; display: flex; align-items: center; gap: 56px; }
+  .track span::after { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--hair); }
+  @keyframes slide { to { transform: translateX(-50%); } }
+
+  /* ---------- bento ---------- */
+  .bento { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+  .b8 { grid-column: span 8; } .b4 { grid-column: span 4; } .b6 { grid-column: span 6; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+  .chip { font-family: var(--mono); font-size: 11.5px; padding: 5px 12px; border-radius: 999px; border: 1px solid var(--hair); color: var(--soft); background: rgba(255,255,255,0.03); }
+  .chip.v { color: #C9C2FF; border-color: rgba(139,124,255,0.35); }
+  .chip.e { color: #8FF0CC; border-color: rgba(52,216,160,0.3); }
+  .chip.a { color: #FFD3A3; border-color: rgba(255,184,107,0.3); }
+  .idx { font-family: var(--mono); font-size: 12px; color: var(--faint); letter-spacing: 0.1em; display: block; margin-bottom: 56px; }
+
+  /* ---------- projects ---------- */
+  .projects { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .proj .core { display: flex; flex-direction: column; min-height: 320px; }
+  .proj .lang { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
+  .proj h3 { font-size: 28px; margin-top: auto; padding-top: 48px; letter-spacing: -0.04em; }
+  .proj .go { margin-top: 24px; display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--soft); }
+  .proj .go i { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.07); display: grid; place-items: center;
+    transition: transform 600ms var(--spring), background 600ms var(--spring); }
+  .proj .go svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+  .bezel:hover .go i { transform: translate(3px, -2px); background: rgba(255,255,255,0.14); }
+  .bezel { transition: transform 700ms var(--spring); }
+  a.bezel:hover { transform: translateY(-6px); }
+  .workshop { margin-top: 16px; }
+  .workshop ul { list-style: none; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 48px; margin-top: 24px; }
+  .workshop li { padding: 16px 0; border-top: 1px solid var(--hair); color: var(--soft); font-size: 15px; }
+  .workshop li strong { color: var(--ink); font-weight: 500; display: block; }
+
+  /* ---------- stack ---------- */
+  .stack { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .stack .core { padding: 28px; }
+  .stack h3 { font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); font-weight: 500; margin-bottom: 18px; }
+  .stack p { color: var(--ink); font-size: 16px; line-height: 1.7; }
+
+  /* ---------- contact ---------- */
+  .cta-box { text-align: center; }
+  .cta-box .core { padding: 96px 32px; }
+  .cta-box h2 { margin: 24px auto 40px; max-width: 14em; }
+  .cta-box .actions { justify-content: center; margin-top: 0; }
+  .cta-box .core::after { content: ''; position: absolute; left: 50%; top: -40%; width: 70%; height: 80%; transform: translateX(-50%);
+    background: radial-gradient(closest-side, rgba(139,124,255,0.22), transparent); pointer-events: none; }
+
+  footer { padding: 40px 0 56px; }
+  footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; color: var(--faint); font-size: 14px; }
+
+  /* ---------- ambient motion ---------- */
+  @media (prefers-reduced-motion: no-preference) {
+    .orb.a { animation: drift1 26s ease-in-out infinite alternate; }
+    .orb.b { animation: drift2 32s ease-in-out infinite alternate; }
+    .orb.c { animation: drift1 38s ease-in-out infinite alternate-reverse; }
+  }
+  @keyframes drift1 { to { transform: translate3d(8vw, 6vh, 0) scale(1.08); } }
+  @keyframes drift2 { to { transform: translate3d(-9vw, -5vh, 0) scale(1.1); } }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .js .rv { opacity: 1; transform: none; filter: none; transition: none; }
+    .track, .dot, .steps .n, .steps b { animation: none; }
+    .overlay a { transition: none; }
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .projects, .stack { grid-template-columns: 1fr; }
+    .b8, .b4, .b6 { grid-column: span 12; }
+    .workshop ul { grid-template-columns: 1fr; }
+    section { padding: 88px 0; }
+  }
+  @media (max-width: 720px) {
+    .nav { padding: 6px 6px 6px 20px; }
+    .nav .links { display: none; }
+    .nav .brand { margin-right: 28px; }
+    .burger { display: block; }
+    .wrap { padding: 0 16px; }
+    .core { padding: 24px; }
+    .cta-box .core { padding: 64px 20px; }
+    .proj .core { min-height: 260px; }
+  }
+</style>
+</head>
+<body>
+<div class="orbs" aria-hidden="true"><div class="orb a"></div><div class="orb b"></div><div class="orb c"></div></div>
+<div class="grain" aria-hidden="true"></div>
+
+<nav class="nav" aria-label="Main">
+  <a class="brand" href="#top">Oscar</a>
+  <div class="links">
+    <a href="#focus">Focus</a>
+    <a href="#projects">Projects</a>
+    <a href="#stack">Stack</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <button class="burger" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span></button>
+</nav>
+<div class="overlay" aria-hidden="true">
+  <a href="#focus">Focus</a>
+  <a href="#projects">Projects</a>
+  <a href="#stack">Stack</a>
+  <a href="#contact">Contact</a>
+</div>
+
+<main id="top">
+  <header class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow rv"><i class="dot"></i>Senior Software Engineer / Mexico</span>
+        <h1 class="rv" style="--i:1">Agentic AI systems, <span>built on</span> <span class="grad" style="color:transparent">production-grade</span> <span>backends.</span></h1>
+        <p class="lede rv" style="--i:2">Ten-plus years shipping services and full-stack products for global financial and enterprise clients. Now I design LLM workflows with guardrails, observability and validation, and run image and video models locally on consumer GPUs and Apple Silicon.</p>
+        <div class="actions rv" style="--i:3">
+          <a class="btn solid" href="#projects">See projects <span class="ico"><svg viewBox="0 0 16 16"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span></a>
+          <a class="btn glass" href="https://github.com/arleckk" target="_blank" rel="noopener">GitHub <span class="ico"><svg viewBox="0 0 16 16"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span></a>
+        </div>
+      </div>
+
+      <div class="rv" style="--i:2">
+        <div class="bezel spot"><div class="core panel">
+          <div class="bar"><span>agent pipeline</span><span>guarded</span></div>
+          <ol class="steps">
+            <li><span class="n" style="--k:0">01</span><div><b style="--k:0">Research</b><small>context gathered, sources traced</small></div></li>
+            <li><span class="n" style="--k:1">02</span><div><b style="--k:1">Plan</b><small>policy-based approval</small></div></li>
+            <li><span class="n" style="--k:2">03</span><div><b style="--k:2">Implement</b><small>output validated against rules</small></div></li>
+            <li><span class="n" style="--k:3">04</span><div><b style="--k:3">Review</b><small>human-in-the-loop quality gate</small></div></li>
+          </ol>
+        </div></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="track">
+      <span>Claude</span><span>OpenAI</span><span>Ollama</span><span>MLX</span><span>ComfyUI</span><span>Java</span><span>Spring Boot</span><span>Python</span><span>FastAPI</span><span>TypeScript</span><span>Swift</span><span>Electron</span><span>Kafka</span><span>Terraform</span>
+      <span>Claude</span><span>OpenAI</span><span>Ollama</span><span>MLX</span><span>ComfyUI</span><span>Java</span><span>Spring Boot</span><span>Python</span><span>FastAPI</span><span>TypeScript</span><span>Swift</span><span>Electron</span><span>Kafka</span><span>Terraform</span>
+    </div>
+  </div>
+
+  <section id="focus">
+    <div class="wrap">
+      <div class="head rv">
+        <span class="eyebrow">What I work on</span>
+        <h2>Models are the easy part. <span>The system around them is the work.</span></h2>
+      </div>
+      <div class="bento">
+        <div class="b8 rv" style="--i:0"><div class="bezel spot"><div class="core">
+          <span class="idx">01</span>
+          <h3>Agentic delivery workflows</h3>
+          <p>Multi-step research, plan, implement and review pipelines on Claude and OpenAI models. Backend services connect the agents to enterprise guardrails: policy-based approvals, human-in-the-loop quality gates, and output validation against quality and compliance rules.</p>
+          <div class="chips"><span class="chip v">LLM orchestration</span><span class="chip e">Guardrails</span><span class="chip a">Agent observability</span></div>
+        </div></div></div>
+
+        <div class="b4 rv" style="--i:1"><div class="bezel spot"><div class="core">
+          <span class="idx">02</span>
+          <h3>Local-first AI</h3>
+          <p>On-device inference with Ollama, MLX and ComfyUI, tuned for a 12 GB GPU and for Apple Silicon.</p>
+        </div></div></div>
+
+        <div class="b4 rv" style="--i:0"><div class="bezel spot"><div class="core">
+          <span class="idx">03</span>
+          <h3>Backend performance</h3>
+          <p>Query tuning, async refactors and service migrations for high-traffic APIs.</p>
+        </div></div></div>
+
+        <div class="b8 rv" style="--i:1"><div class="bezel spot"><div class="core">
+          <span class="idx">04</span>
+          <h3>Legacy modernization</h3>
+          <p>Moving Java and Spring systems with years of history to current framework versions, clearing defect backlogs, and shifting alerting and analytics onto standardized, Terraform-managed observability.</p>
+          <div class="chips"><span class="chip v">Java / Spring</span><span class="chip e">Microservices</span><span class="chip a">Terraform</span></div>
+        </div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="wrap">
+      <div class="head rv">
+        <span class="eyebrow">Selected projects</span>
+        <h2>Things I build <span>when nobody is asking me to.</span></h2>
+      </div>
+      <div class="projects">
+        <a class="bezel spot proj rv" style="--i:0" href="https://github.com/arleckk/riftway" target="_blank" rel="noopener"><div class="core">
+          <span class="lang">Swift</span>
+          <h3>riftway</h3>
+          <p>Run Windows games and installers on macOS with a double click. Its own Wine runtime, a library, URL bridges and compatibility profiles.</p>
+          <span class="go"><i><svg viewBox="0 0 16 16"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></i>View on GitHub</span>
+        </div></a>
+        <a class="bezel spot proj rv" style="--i:1" href="https://github.com/arleckk/fmodel-mac" target="_blank" rel="noopener"><div class="core">
+          <span class="lang">C# / Avalonia</span>
+          <h3>fmodel-mac</h3>
+          <p>Unofficial macOS (Apple Silicon) port of FModel, built on CUE4Parse with an Avalonia interface.</p>
+          <span class="go"><i><svg viewBox="0 0 16 16"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></i>View on GitHub</span>
+        </div></a>
+        <a class="bezel spot proj rv" style="--i:2" href="https://github.com/arleckk/ComfyUI-Model-Installer" target="_blank" rel="noopener"><div class="core">
+          <span class="lang">Python</span>
+          <h3>ComfyUI Model Installer</h3>
+          <p>Finds and installs the models a ComfyUI workflow needs, so shared workflows run on the first try.</p>
+          <span class="go"><i><svg viewBox="0 0 16 16"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></i>View on GitHub</span>
+        </div></a>
+      </div>
+
+      <div class="workshop rv"><div class="bezel spot"><div class="core">
+        <h3>Also in the workshop</h3>
+        <p>Private for now, but part of how I think about local AI tooling.</p>
+        <ul>
+          <li><strong>Monarca Studio</strong>On-device image and video generation, Electron over FastAPI.</li>
+          <li><strong>LAICA</strong>AI-assisted IDE with built-in Git Flow guidance.</li>
+          <li><strong>ComfyUI API Manager</strong>Exposes ComfyUI workflows as a REST API.</li>
+          <li><strong>VideoForge</strong>Video generation backends for both CUDA and MLX.</li>
+          <li><strong>CanYouRunAI</strong>Checks whether a machine can run a given model locally.</li>
+        </ul>
+      </div></div></div>
+    </div>
+  </section>
+
+  <section id="stack">
+    <div class="wrap">
+      <div class="head rv">
+        <span class="eyebrow">Stack</span>
+        <h2>Tools I <span>reach for.</span></h2>
+      </div>
+      <div class="stack">
+        <div class="rv" style="--i:0"><div class="bezel spot"><div class="core"><h3>AI / LLM</h3><p>Claude and OpenAI APIs, agentic workflows, prompt and context engineering, Ollama, MLX, ComfyUI</p></div></div></div>
+        <div class="rv" style="--i:1"><div class="bezel spot"><div class="core"><h3>Languages</h3><p>Java, Python, Go, TypeScript, JavaScript, Swift</p></div></div></div>
+        <div class="rv" style="--i:2"><div class="bezel spot"><div class="core"><h3>Backend</h3><p>Spring Boot, JPA, Hibernate, FastAPI, Node.js, Kafka, RabbitMQ</p></div></div></div>
+        <div class="rv" style="--i:0"><div class="bezel spot"><div class="core"><h3>Frontend / desktop</h3><p>React, Vite, Tailwind, Electron, SwiftUI</p></div></div></div>
+        <div class="rv" style="--i:1"><div class="bezel spot"><div class="core"><h3>Data</h3><p>PostgreSQL, Oracle, Redis, SQLite</p></div></div></div>
+        <div class="rv" style="--i:2"><div class="bezel spot"><div class="core"><h3>Cloud / DevOps</h3><p>AWS, Azure, Docker, Terraform</p></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <div class="cta-box rv"><div class="bezel"><div class="core">
+        <span class="eyebrow">Contact</span>
+        <h2>Have a look at <span>what I'm building.</span></h2>
+        <div class="actions">
+          <a class="btn solid" href="https://github.com/arleckk" target="_blank" rel="noopener">github.com/arleckk <span class="ico"><svg viewBox="0 0 16 16"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span></a>
+        </div>
+      </div></div></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><span>Oscar — Mexico</span><span>Spanish (native) · English</span></div>
+</footer>
+
+<script>
+  document.documentElement.classList.add('js');
+
+  // scroll reveal
+  (function () {
+    var els = document.querySelectorAll('.rv');
+    if (!('IntersectionObserver' in window)) { els.forEach(function (e) { e.classList.add('in'); }); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, { threshold: 0.1, rootMargin: '0px 0px -5% 0px' });
+    els.forEach(function (e) { io.observe(e); });
+    // failsafe: reveal anything already on screen if the observer's first callback is late
+    function sweep() {
+      els.forEach(function (e) {
+        var r = e.getBoundingClientRect();
+        if (r.top < innerHeight * 0.95 && r.bottom > 0) { e.classList.add('in'); io.unobserve(e); }
+      });
+    }
+    window.addEventListener('load', function () { setTimeout(sweep, 150); setTimeout(sweep, 900); });
+  })();
+
+  // cursor spotlight on cards
+  document.querySelectorAll('.spot').forEach(function (el) {
+    el.addEventListener('pointermove', function (ev) {
+      var core = el.querySelector('.core'); if (!core) return;
+      var r = core.getBoundingClientRect();
+      core.style.setProperty('--mx', (ev.clientX - r.left) + 'px');
+      core.style.setProperty('--my', (ev.clientY - r.top) + 'px');
+    });
+  });
+
+  // mobile menu
+  (function () {
+    var b = document.querySelector('.burger'), o = document.querySelector('.overlay');
+    function set(open) {
+      document.body.classList.toggle('menu-open', open);
+      b.setAttribute('aria-expanded', String(open));
+      o.setAttribute('aria-hidden', String(!open));
+    }
+    b.addEventListener('click', function () { set(!document.body.classList.contains('menu-open')); });
+    o.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { set(false); }); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+  })();
+</script>
+</body>
+</html>
